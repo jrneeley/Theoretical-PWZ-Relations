@@ -1,6 +1,7 @@
 # Theoretical-PWZ-Relations
 Generate coefficients of theoretical PWZ relations
 
+Dependencies: Numpy, matplotlib, scipy
 
 This program uses mean magnitudes of RR Lyrae stars from pulsation models to derive theoretical 
 period-Wesenheit-metallicity relations. 
@@ -16,16 +17,16 @@ alpha will be calculated using the Cardelli et al. 1989 reddening law.
 Inputs: 
     
     bands - list of three filters to use in calculating the Wesenheit magnitude (i.e. ['U','B','V'])
-        Valid filters: 'U', 'B', 'V', 'R', 'I', 'J', 'H', 'K', 'I1', 'I2', 'I3', 'I4', 'W1', 'W2', 'W3', 'W4'
-        UBV are Johnson
-        RI are Kron-Cousins
-        JHK are 2MASS
-        I1 - I4 are Spitzer IRAC 3.6, 4.5, 5.8, and 8.0 micron bands
-        W1 - W4 are WISE 3.4, 4.6, 12, 24 micron bands
+            Valid filters: 'U', 'B', 'V', 'R', 'I', 'J', 'H', 'K', 'I1', 'I2', 'I3', 'I4', 'W1', 'W2', 'W3', 'W4'
+            UBV: Johnson
+            RI: Kron-Cousins
+            JHK: 2MASS
+            I1-4: Spitzer IRAC 3.6, 4.5, 5.8, and 8.0 micron bands
+            W1-4: WISE 3.4, 4.6, 12, 24 micron bands
 
     ext - extinction coefficients for your three bands as ratios A_lambda/Av (i.e [1.2,1.1,1.0]). Default values 
-        are defined according to the Cardelli et al. 1989 reddening law with Rv = 3.1, extended into the MIR bands according to
-        Indebetouw et al. 2005
+        are defined according to the Cardelli et al. 1989 reddening law with Rv = 3.1, extended into the MIR bands 
+        according to Indebetouw et al. 2005
     
     fundamentalized - flag to indicate whether you want separate first overtone and fundamental relations
         or fundamentalized relations. Default is 0 for separate, set to 1 for fundamentalized.
