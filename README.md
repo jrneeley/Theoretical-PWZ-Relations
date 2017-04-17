@@ -5,7 +5,7 @@ Generate coefficients of theoretical PWZ relations
 This program uses mean magnitudes of RR Lyrae stars from pulsation models to derive theoretical 
 period-Wesenheit-metallicity relations. 
 
-The Wesenheit magnitude is defined as W(m1, m2, m3) = m1 + alpha*(m2 - m3), where 
+The Wesenheit magnitude is defined as W(m1, m2 - m3) = m1 + alpha*(m2 - m3), where 
 alpha is the ratio of the extinction coefficient of m1 and the color excess of bands m2 and m3,
 alpha = A_m1/Av / (A_m2/Av - Am3/Av)
 
@@ -35,6 +35,13 @@ I1 - I4 are Spitzer IRAC 3.6, 4.5, 5.8, and 8.0 micron bands
 W1 - W4 are WISE 3.4, 4.6, 12, 24 micron bands
 
 
-example:
+examples:
 
-get_PWZ(['V','B',V'])
+    Generate coefficients for 2 band PWZ relation W(V, B-V) with Cardelli reddening law
+        > get_PWZ(['V','B',V'])
+
+    Genereate coefficients for 3 band PWZ relation W(V, B-R) with Fitzpatrick reddening law
+        > get_PWZ(['V','B','R'], [1.x, 1.x, 1.x])
+
+    Generate coefficients of fundamentalized PWZ relation W(V, B-V) with Cardelli reddening law 
+        > get_PWZ(['V','B','V'], fundamentalized=1)
