@@ -38,7 +38,7 @@ examples:
         > get_PWZ(['V','B',V'])
 
     Genereate coefficients for 3 band PWZ relation W(V, B-R) with Fitzpatrick reddening law
-        > get_PWZ(['V','B','R'], [1.x, 1.x, 1.x])
+        > get_PWZ(['J','I','K'], [0.277, 0.506, 0.116])
 
     Generate coefficients of fundamentalized PWZ relation W(V, B-V) with Cardelli reddening law 
         > get_PWZ(['V','B','V'], fundamentalized=1)
