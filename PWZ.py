@@ -59,7 +59,7 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
         W_c = RRc[band1] - alpha * (RRc[band2] - RRc[band3])
         W_ab = RRab[band1] - alpha * (RRab[band2] - RRab[band3])
 
-        XX,YY = np.meshgrid(np.arange(-2.5, 0.5, 0.3), np.arange(-0.45, 0.25, 0.07))
+        XX,YY = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.45, 0.25, 0.06))
 
     # best-fit linear plane
         A = np.c_[FeH, period, np.ones(period.shape[0])]
@@ -67,12 +67,16 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
 
     # evaluate it on grid
         ZZ = C[0]*XX + C[1]*YY + C[2]
+    # calculate standard deviation
+        residual = W - (C[0]*FeH + C[1]*period+C[2])
+        fofu_std = np.std(residual)
         print "\nReddening coefficient = {:0.3f}".format(alpha)
         print '\nW('+band1+','+band2+'-'+band3+') = a + b*logP + c*[Fe/H]\n'
         print 'Fundamentalized Coefficients: '
         print 'a = {:0.3f}'.format(C[2])
         print 'b = {:0.3f}'.format(C[1])
         print 'c = {:0.3f}'.format(C[0])
+        print 'sigma = {:0.3f}'.format(fofu_std)
 
         fig = mp.figure()
         ax = fig.gca(projection='3d')
@@ -92,8 +96,8 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
         W_c = RRc[band1] - alpha* (RRc[band2] - RRc[band3])
         W_ab = RRab[band1] - alpha* (RRab[band2] - RRab[band3])
 
-        X_c,Y_c = np.meshgrid(np.arange(-2.5, 0.5, 0.3), np.arange(-0.6, -0.2, 0.04))
-        X_ab,Y_ab = np.meshgrid(np.arange(-2.5, 0.5, 0.3), np.arange(-0.45, 0.25, 0.07))
+        X_c,Y_c = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.6, -0.2, 0.036))
+        X_ab,Y_ab = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.45, 0.25, 0.06))
 
     # best-fit linear plane
         A_c = np.c_[FeH_c, RRc['logP'], np.ones(RRc.shape[0])]
@@ -105,17 +109,25 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
     # evaluate it on grid
         Z_c = C_c[0]*X_c + C_c[1]*Y_c + C_c[2]
         Z_ab = C_ab[0]*X_ab + C_ab[1]*Y_ab + C_ab[2]
-        #print 'Reddening coefficient = ', alpha
+    # calculate standard deviation
+        residual_c = W_c - (C_c[0]*FeH_c + C_c[1]*RRc['logP']+C_c[2])
+        residual_ab = W_ab - (C_ab[0]*FeH_ab + C_ab[1]*RRab['logP']+C_ab[2])
+        fo_std = np.std(residual_c)
+        fu_std = np.std(residual_ab)
+
         print "\nReddening coefficient = {:0.3f}".format(alpha)
         print '\nW('+band1+','+band2+'-'+band3+') = a + b*logP + c*[Fe/H]\n'
         print 'Fundamental Coefficients: '
         print 'a = {:0.3f}'.format(C_ab[2])
         print 'b = {:0.3f}'.format(C_ab[1])
         print 'c = {:0.3f}'.format(C_ab[0])
+        print 'sigma = {:0.3f}'.format(fu_std)
         print '\nFirst Overtone Coefficients: '
         print 'a = {:0.3f}'.format(C_c[2])
         print 'b = {:0.3f}'.format(C_c[1])
         print 'c = {:0.3f}'.format(C_c[0])
+        print 'sigma = {:0.3f}'.format(fo_std)
+
 
         fig = mp.figure()
         ax = fig.gca(projection='3d')
@@ -152,7 +164,7 @@ def get_PLZ(band, fundamentalized=0):
 
         m1 = np.append(RRc[band], RRab[band])
 
-        XX,YY = np.meshgrid(np.arange(-2.5, 0.5, 0.3), np.arange(-0.45, 0.25, 0.07))
+        XX,YY = np.meshgrid(np.arange(-3.0, 0.0, 0.3), np.arange(-0.45, 0.25, 0.07))
 
     # best-fit linear plane
         A = np.c_[FeH, period, np.ones(period.shape[0])]
@@ -181,8 +193,8 @@ def get_PLZ(band, fundamentalized=0):
         FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
         FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
 
-        X_c,Y_c = np.meshgrid(np.arange(-2.5, 0.5, 0.3), np.arange(-0.6, -0.2, 0.04))
-        X_ab,Y_ab = np.meshgrid(np.arange(-2.5, 0.5, 0.3), np.arange(-0.45, 0.25, 0.07))
+        X_c,Y_c = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.6, -0.2, 0.036))
+        X_ab,Y_ab = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.45, 0.25, 0.06))
 
     # best-fit linear plane
         A_c = np.c_[FeH_c, RRc['logP'], np.ones(RRc.shape[0])]
