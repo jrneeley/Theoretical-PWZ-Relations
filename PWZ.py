@@ -47,10 +47,12 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
         period = np.append(RRc['logP'], RRab['logP'])
         Z = np.append(RRc['Z'], RRab['Z'])
         Y = np.append(RRc['Y'], RRab['Y'])
-        FeH = np.log10(Z/(1-Z-Y))+1.61 - np.log10(0.694*10**0.4+0.306)
-        FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
-        FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
-
+    #    FeH = np.log10(Z/(1-Z-Y))+1.61 - np.log10(0.694*10**0.4+0.306)
+    #    FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
+    #    FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
+        FeH = np.log10(Z/(1-Z-Y))+1.61 - 0.35
+        FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - 0.35
+        FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - 0.35
         m1 = np.append(RRc[band1], RRab[band1])
         m2 = np.append(RRc[band2], RRab[band2])
         m3 = np.append(RRc[band3], RRab[band3])
@@ -77,6 +79,8 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
         print 'b = {:0.3f}'.format(C[1])
         print 'c = {:0.3f}'.format(C[0])
         print 'sigma = {:0.3f}'.format(fofu_std)
+
+        coefficients = [C[2], C[1], C[0], fofu_std]
 
         fig = mp.figure()
         ax = fig.gca(projection='3d')
@@ -128,6 +132,7 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
         print 'c = {:0.3f}'.format(C_c[0])
         print 'sigma = {:0.3f}'.format(fo_std)
 
+        coefficients = [C_c[2], C_c[1], C_c[0], fo_std, C_ab[2], C_ab[1], C_ab[0], fu_std]
 
         fig = mp.figure()
         ax = fig.gca(projection='3d')
@@ -141,9 +146,11 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
         #mp.plot(data['logP'], data['i1'], 'ro')
         mp.show()
 
-def get_PLZ(band, fundamentalized=0):
+    return coefficients
+
+def get_PLZ(band, fundamentalized=0, suppress_output=0):
     bands_all = ['U', 'B', 'V', 'R', 'I', 'J', 'H', 'K', 'I1', 'I2', 'I3', 'I4',
-        'W1', 'W2', 'W3']
+        'W1', 'W2', 'W3', 'W4']
 
     col1 = bands_all.index(band)+6
 
@@ -158,10 +165,12 @@ def get_PLZ(band, fundamentalized=0):
         period = np.append(RRc['logP'], RRab['logP'])
         Z = np.append(RRc['Z'], RRab['Z'])
         Y = np.append(RRc['Y'], RRab['Y'])
-        FeH = np.log10(Z/(1-Z-Y))+1.61 - np.log10(0.694*10**0.4+0.306)
-        FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
-        FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
-
+    #    FeH = np.log10(Z/(1-Z-Y))+1.61 - np.log10(0.694*10**0.4+0.306)
+    #    FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
+    #    FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
+        FeH = np.log10(Z/(1-Z-Y))+1.61 - 0.35
+        FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - 0.35
+        FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 -0.35
         m1 = np.append(RRc[band], RRab[band])
 
         XX,YY = np.meshgrid(np.arange(-3.0, 0.0, 0.3), np.arange(-0.45, 0.25, 0.07))
@@ -172,27 +181,37 @@ def get_PLZ(band, fundamentalized=0):
 
     # evaluate it on grid
         ZZ = C[0]*XX + C[1]*YY + C[2]
-        print '\nM('+band+') = a + b*logP + c*[Fe/H]\n'
-        print 'Fundamentalized Coefficients: '
-        print 'a = {:0.3f}'.format(C[2])
-        print 'b = {:0.3f}'.format(C[1])
-        print 'c = {:0.3f}'.format(C[0])
+    # calculate standard deviation
+        residual_c = m1 - (C_c[0]*FeH_c + C_c[1]*RRc['logP']+C_c[2])
+        fofu_std = np.std(residual)
 
-        fig = mp.figure()
-        ax = fig.gca(projection='3d')
-        ax.plot_surface(XX, YY, ZZ, rstride=1, cstride=1, alpha=0.2)
-        ax.scatter(FeH_c, RRc['logP'], RRc[band], c='b', marker='o')
-        ax.scatter(FeH_ab, RRab['logP'], RRab[band], c='r', marker='o')
-        mp.xlabel('[Fe/H]')
-        mp.ylabel('logP')
-        ax.set_zlabel('M('+band+')')
-        #mp.plot(data['logP'], data['i1'], 'ro')
-        mp.show()
+        coefficients = [C[2], C[1], C[0], fofu_std]
+
+        if suppress_output == 0:
+            print '\nM('+band+') = a + b*logP + c*[Fe/H]\n'
+            print 'Fundamentalized Coefficients: '
+            print 'a = {:0.3f}'.format(C[2])
+            print 'b = {:0.3f}'.format(C[1])
+            print 'c = {:0.3f}'.format(C[0])
+            print 'sigma = {:0.3f}'.format(fofu_std)
+
+            fig = mp.figure()
+            ax = fig.gca(projection='3d')
+            ax.plot_surface(XX, YY, ZZ, rstride=1, cstride=1, alpha=0.2)
+            ax.scatter(FeH_c, RRc['logP'], RRc[band], c='b', marker='o')
+            ax.scatter(FeH_ab, RRab['logP'], RRab[band], c='r', marker='o')
+            mp.xlabel('[Fe/H]')
+            mp.ylabel('logP')
+            ax.set_zlabel('M('+band+')')
+                #mp.plot(data['logP'], data['i1'], 'ro')
+            mp.show()
     if fundamentalized == 0:
 
-        FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
-        FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
-
+    #    FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
+    #    FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
+        FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - 0.35
+        FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - 0.35
+        
         X_c,Y_c = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.6, -0.2, 0.036))
         X_ab,Y_ab = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.45, 0.25, 0.06))
 
@@ -206,24 +225,38 @@ def get_PLZ(band, fundamentalized=0):
     # evaluate it on grid
         Z_c = C_c[0]*X_c + C_c[1]*Y_c + C_c[2]
         Z_ab = C_ab[0]*X_ab + C_ab[1]*Y_ab + C_ab[2]
-        print '\nM('+band+') = a + b*logP + c*[Fe/H]\n'
-        print 'Fundamental Coefficients: '
-        print 'a = {:0.3f}'.format(C_ab[2])
-        print 'b = {:0.3f}'.format(C_ab[1])
-        print 'c = {:0.3f}'.format(C_ab[0])
-        print '\nFirst Overtone Coefficients: '
-        print 'a = {:0.3f}'.format(C_c[2])
-        print 'b = {:0.3f}'.format(C_c[1])
-        print 'c = {:0.3f}'.format(C_c[0])
+    # calculate standard deviation
+        residual_c = RRc[band] - (C_c[0]*FeH_c + C_c[1]*RRc['logP']+C_c[2])
+        residual_ab = RRab[band] - (C_ab[0]*FeH_ab + C_ab[1]*RRab['logP']+C_ab[2])
+        fo_std = np.std(residual_c)
+        fu_std = np.std(residual_ab)
 
-        fig = mp.figure()
-        ax = fig.gca(projection='3d')
-        ax.plot_surface(X_ab, Y_ab, Z_ab, rstride=1, cstride=1, alpha=0.2)
-        ax.plot_surface(X_c, Y_c, Z_c, rstride=1, cstride=1, alpha=0.2)
-        ax.scatter(FeH_ab, RRab['logP'], RRab[band], c='r', marker='o')
-        ax.scatter(FeH_c, RRc['logP'], RRc[band], c='b', marker='o')
-        mp.xlabel('[Fe/H]')
-        mp.ylabel('logP')
-        ax.set_zlabel('M('+band+')')
-        #mp.plot(data['logP'], data['i1'], 'ro')
-        mp.show()
+        coefficients = [C_c[2], C_c[1], C_c[0], fo_std, C_ab[2], C_ab[1], C_ab[0], fu_std]
+
+        if suppress_output == 0:
+            print '\nM('+band+') = a + b*logP + c*[Fe/H]\n'
+            print 'Fundamental Coefficients: '
+            print 'a = {:0.3f}'.format(C_ab[2])
+            print 'b = {:0.3f}'.format(C_ab[1])
+            print 'c = {:0.3f}'.format(C_ab[0])
+            print 'sigma = {:0.3f}'.format(fu_std)
+            print '\nFirst Overtone Coefficients: '
+            print 'a = {:0.3f}'.format(C_c[2])
+            print 'b = {:0.3f}'.format(C_c[1])
+            print 'c = {:0.3f}'.format(C_c[0])
+            print 'sigma = {:0.3f}'.format(fo_std)
+
+            fig = mp.figure()
+            ax = fig.gca(projection='3d')
+            ax.plot_surface(X_ab, Y_ab, Z_ab, rstride=1, cstride=1, alpha=0.2)
+            ax.plot_surface(X_c, Y_c, Z_c, rstride=1, cstride=1, alpha=0.2)
+            ax.scatter(FeH_ab, RRab['logP'], RRab[band], c='r', marker='o')
+            ax.scatter(FeH_c, RRc['logP'], RRc[band], c='b', marker='o')
+            mp.xlabel('[Fe/H]')
+            mp.ylabel('logP')
+            ax.set_zlabel('M('+band+')')
+            #mp.plot(data['logP'], data['i1'], 'ro')
+            mp.show()
+
+
+    return coefficients
