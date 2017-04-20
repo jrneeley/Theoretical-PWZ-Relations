@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as mp
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.linalg
+import statsmodels.api as sm
+import sys
 
 
 def get_PWZ(bands, ext=0, fundamentalized=0):
@@ -149,7 +151,7 @@ def get_PWZ(bands, ext=0, fundamentalized=0):
     return coefficients
 
 def get_PLZ(band, fundamentalized=0, suppress_output=0):
-    bands_all = ['U', 'B', 'V', 'R', 'I', 'J', 'H', 'K', 'I1', 'I2', 'I3', 'I4',
+    bands_all = ['R', 'I', 'J', 'H', 'K', 'I1', 'I2', 'I3', 'I4',
         'W1', 'W2', 'W3', 'W4']
 
     col1 = bands_all.index(band)+6
@@ -176,13 +178,19 @@ def get_PLZ(band, fundamentalized=0, suppress_output=0):
         XX,YY = np.meshgrid(np.arange(-3.0, 0.0, 0.3), np.arange(-0.45, 0.25, 0.07))
 
     # best-fit linear plane
-        A = np.c_[FeH, period, np.ones(period.shape[0])]
-        C,_,_,_ = scipy.linalg.lstsq(A, m1)    # coefficients
-
+#        A = np.c_[FeH, period, np.ones(period.shape[0])]
+#        C,_,_,_ = scipy.linalg.lstsq(A, m1)    # coefficients
+        A = np.c_[FeH, period]
+        A = sm.add_constant(A)
+        res = sm.OLS(m1, A).fit()
+#        print res.params
+#        print res.bse
+        C = [res.params[1], res.params[2], res.params[0]]
+        E = [res.bse[1], res.bse[2], res.bse[0]]
     # evaluate it on grid
         ZZ = C[0]*XX + C[1]*YY + C[2]
     # calculate standard deviation
-        residual_c = m1 - (C_c[0]*FeH_c + C_c[1]*RRc['logP']+C_c[2])
+        residual = m1 - (C[0]*FeH + C[1]*period+C[2])
         fofu_std = np.std(residual)
 
         coefficients = [C[2], C[1], C[0], fofu_std]
@@ -211,17 +219,27 @@ def get_PLZ(band, fundamentalized=0, suppress_output=0):
     #    FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - np.log10(0.694*10**0.4+0.306)
         FeH_c = np.log10(RRc['Z']/(1-RRc['Z']-RRc['Y']))+1.61 - 0.35
         FeH_ab = np.log10(RRab['Z']/(1-RRab['Z']-RRab['Y']))+1.61 - 0.35
-        
+
         X_c,Y_c = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.6, -0.2, 0.036))
         X_ab,Y_ab = np.meshgrid(np.arange(-3.0, 0.0, 0.27), np.arange(-0.45, 0.25, 0.06))
 
     # best-fit linear plane
-        A_c = np.c_[FeH_c, RRc['logP'], np.ones(RRc.shape[0])]
-        C_c,_,_,_ = scipy.linalg.lstsq(A_c, RRc[band])    # coefficients
-        A_ab = np.c_[FeH_ab, RRab['logP'], np.ones(RRab.shape[0])]
-        C_ab,_,_,_ = scipy.linalg.lstsq(A_ab, RRab[band])    # coefficients
+#        A_c = np.c_[FeH_c, RRc['logP'], np.ones(RRc.shape[0])]
+#        C_c,_,_,_ = scipy.linalg.lstsq(A_c, RRc[band])    # coefficients
+#        A_ab = np.c_[FeH_ab, RRab['logP'], np.ones(RRab.shape[0])]
+#        C_ab,_,_,_ = scipy.linalg.lstsq(A_ab, RRab[band])    # coefficients
 
+        A_c = np.c_[FeH_c, RRc['logP']]
+        A_ab = np.c_[FeH_ab, RRab['logP']]
+        A_c = sm.add_constant(A_c)
+        A_ab = sm.add_constant(A_ab)
+        res_c = sm.OLS(RRc[band], A_c).fit()
+        res_ab = sm.OLS(RRab[band], A_ab).fit()
 
+        C_c = [res_c.params[1], res_c.params[2], res_c.params[0]]
+        E_c = [res_c.bse[1], res_c.bse[2], res_c.bse[0]]
+        C_ab = [res_ab.params[1], res_ab.params[2], res_ab.params[0]]
+        E_ab = [res_ab.bse[1], res_ab.bse[2], res_ab.bse[0]]
     # evaluate it on grid
         Z_c = C_c[0]*X_c + C_c[1]*Y_c + C_c[2]
         Z_ab = C_ab[0]*X_ab + C_ab[1]*Y_ab + C_ab[2]
