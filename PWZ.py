@@ -29,16 +29,16 @@ def get_PWZ(bands, ext=0, fundamentalized=0, suppress_output=0):
         # Read in theoretical mean mags for two band relation
         dtype1 = np.dtype([('Z', float), ('Y', float), ('logP', float), (band1, float),
             (band2, float), (band3, float)])
-        RRab = np.loadtxt('FU-means3.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col2+1), skiprows=33)
-        RRc = np.loadtxt('FO-means3.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col2+1), skiprows=33)
+        RRab = np.loadtxt('FU-means.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col2+1), skiprows=33)
+        RRc = np.loadtxt('FO-means.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col2+1), skiprows=33)
         RRab[band3] = RRab[band1]
         RRc[band3] = RRc[band1]
     else:
         # Read in theoretical mean mags for three band relation
         dtype1 = np.dtype([('Z', float), ('Y', float), ('logP', float), (band1, float),
             (band2, float), (band3, float)])
-        RRab = np.loadtxt('FU-means3.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col3), skiprows=33)
-        RRc = np.loadtxt('FO-means3.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col3), skiprows=33)
+        RRab = np.loadtxt('FU-means.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col3), skiprows=33)
+        RRc = np.loadtxt('FO-means.txt', dtype=dtype1, usecols=(0,1,5,col1,col2,col3), skiprows=33)
 
 # Define reddening coefficient
     alpha = ext[0]/(ext[1] - ext[2])
@@ -180,8 +180,8 @@ def get_PLZ(band, fundamentalized=0, suppress_output=0):
 
     # Read in theoretical mean mags for two band relation
     dtype1 = np.dtype([('Z', float), ('Y', float), ('logP', float), (band, float)])
-    RRab = np.loadtxt('FU-means3.txt', dtype=dtype1, usecols=(0,1,5,col1), skiprows=33)
-    RRc = np.loadtxt('FO-means3.txt', dtype=dtype1, usecols=(0,1,5,col1), skiprows=33)
+    RRab = np.loadtxt('FU-means.txt', dtype=dtype1, usecols=(0,1,5,col1), skiprows=33)
+    RRc = np.loadtxt('FO-means.txt', dtype=dtype1, usecols=(0,1,5,col1), skiprows=33)
 
     if fundamentalized == 1:
         RRc['logP'] += 0.127
