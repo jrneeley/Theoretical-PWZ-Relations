@@ -1,7 +1,8 @@
 # Theoretical-PWZ-Relations
-Generate coefficients of theoretical PWZ relations
+Generate coefficients of theoretical PWZ relations presented in 
+Neeley et al. 2017, ApJ
 
-Dependencies: Numpy, matplotlib, scipy
+Dependencies: Numpy, matplotlib, scipy, statsmodels
 
 This program uses mean magnitudes of RR Lyrae stars from pulsation models to derive theoretical 
 period-Wesenheit-metallicity relations. 
@@ -9,6 +10,12 @@ period-Wesenheit-metallicity relations.
 The Wesenheit magnitude is defined as W(m1, m2 - m3) = m1 + alpha*(m2 - m3), where 
 alpha is the ratio of the extinction coefficient of m1 and the color excess of bands m2 and m3,
 alpha = A_m1/Av / (A_m2/Av - Am3/Av)
+
+To derive the coefficients for individual combintations of filters, use the function get_PWZ. If you wish to derive the 
+coefficients for all possible combinations of filters, you may use all_pwz.py (after editing the appropriate line 
+defining the reddening law). 
+
+To use get_PWZ():
 
 Enter a list of the filters you want to use in the Wesenheit magnitude, and
 the relevant extinction coefficients (e.g. A_m1 / Av) for each band. If you do not enter extinction coefficients,
@@ -30,15 +37,26 @@ Inputs:
     
     fundamentalized - flag to indicate whether you want separate first overtone and fundamental relations
         or fundamentalized relations. Default is 0 for separate, set to 1 for fundamentalized.
+        
+    suppress_output - flag to either print the coefficients to the terminal and display a plot, or suppress the 
+        output. Default is 0, set to 1 to suppress. 
+
+Outputs:
+    
+    coefficients - An array containing the coefficients a, b, c, and the standard deviation. This array has length 
+        of 8 if you are deriving separate relations (first overtone then fundamental), or 4 if you are deriving 
+        fundamentalized relations
+    
+    errors - Standard errors of the coefficients
 
 
 examples:
 
     Generate coefficients for 2 band PWZ relation W(V, B-V) with Cardelli reddening law
-        > get_PWZ(['V','B',V'])
+        >>> coeff, err = get_PWZ(['V','B',V'])
 
     Genereate coefficients for 3 band PWZ relation W(V, B-R) with Fitzpatrick reddening law
-        > get_PWZ(['J','I','K'], [0.277, 0.506, 0.116])
+        >>> coeff, err = get_PWZ(['J','I','K'], [0.277, 0.506, 0.116])
 
     Generate coefficients of fundamentalized PWZ relation W(V, B-V) with Cardelli reddening law 
-        > get_PWZ(['V','B','V'], fundamentalized=1)
+        >>> coeff, err = get_PWZ(['V','B','V'], fundamentalized=1)
