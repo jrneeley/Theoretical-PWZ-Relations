@@ -51,12 +51,13 @@ Outputs:
 
 
 examples:
-
+        
+        >>> import PWZ
     Generate coefficients for 2 band PWZ relation W(V, B-V) with Cardelli reddening law
-        >>> coeff, err = get_PWZ(['V','B',V'])
+        >>> coeff, err = PWZ.get_PWZ(['V','B',V'])
 
     Genereate coefficients for 3 band PWZ relation W(V, B-R) with Fitzpatrick reddening law
-        >>> coeff, err = get_PWZ(['J','I','K'], [0.277, 0.506, 0.116])
+        >>> coeff, err = PWZ.get_PWZ(['J','I','K'], [0.277, 0.506, 0.116])
 
     Generate coefficients of fundamentalized PWZ relation W(V, B-V) with Cardelli reddening law 
-        >>> coeff, err = get_PWZ(['V','B','V'], fundamentalized=1)
+        >>> coeff, err = PWZ.get_PWZ(['V','B','V'], fundamentalized=1)
