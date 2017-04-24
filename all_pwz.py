@@ -21,6 +21,7 @@ pwz2_ce = np.zeros(3*n_combinations)
 pwz2_sig = np.zeros(3*n_combinations)
 pwz2_bands = np.zeros(3*n_combinations, dtype='S8')
 rel_type = np.zeros(3*n_combinations, dtype='S5')
+pwz2_alpha = np.zeros(3*n_combinations)
 
 n_relation = 0
 for ind, band in enumerate(bands):
@@ -53,14 +54,16 @@ for ind, band in enumerate(bands):
         pwz2_sig[table_ind] = [c[3], c[7], c_fun[3]]
         rel = bands[ind]+','+bands[band2]+'-'+bands[ind]
         pwz2_bands[table_ind] = [rel, rel, rel]
-        rel_type[table_ind] = ['FU', 'FO', 'FO+FU']
+        rel_type[table_ind] = ['FO', 'FU', 'FO+FU']
+        alpha = ext_in[0]/(ext_in[1]-ext_in[2])
+        pwz2_alpha[table_ind] = [alpha, alpha, alpha]
         band2 += -1
         n_relation += 3
 
-data = np.array(zip(rel_type, pwz2_bands, pwz2_a, pwz2_b, pwz2_c, pwz2_ae, pwz2_be, pwz2_ce,
-    pwz2_sig), dtype=[('type', 'S5'), ('bands', 'S8'), ('a', float), ('b', float), ('c', float),
+data = np.array(zip(rel_type, pwz2_bands, pwz2_alpha, pwz2_a, pwz2_b, pwz2_c, pwz2_ae, pwz2_be, pwz2_ce,
+    pwz2_sig), dtype=[('type', 'S5'), ('bands', 'S8'), ('alpha', float), ('a', float), ('b', float), ('c', float),
     ('ae', float), ('be', float), ('ce', float), ('sig', float)])
-np.savetxt('PWZ2.dat', data, fmt=['%5s', '%8s']+['%6.3f', '%6.3f', '%6.3f', '%6.3f',
+np.savetxt('PWZ2.dat', data, fmt=['%5s', '%8s']+['%6.3f', '%6.3f', '%6.3f', '%6.3f', '%6.3f',
     '%6.3f', '%6.3f', '%6.3f'])
 
 # 3 band PWZ relations
@@ -81,6 +84,7 @@ pwz3_ce = np.zeros(3*n_combinations)
 pwz3_sig = np.zeros(3*n_combinations)
 pwz3_bands = np.zeros(3*n_combinations, dtype='S8')
 rel_type = np.zeros(3*n_combinations, dtype='S5')
+pwz3_alpha = np.zeros(3*n_combinations)
 
 n_relation = 0
 for ind in range(0,len(bands)-2):
@@ -102,7 +106,7 @@ for ind in range(0,len(bands)-2):
             c, e = PWZ.get_PWZ(bands_in, ext=ext_in, suppress_output=1)
             c_fun, e_fun = PWZ.get_PWZ(bands_in, ext=ext_in, fundamentalized=1, suppress_output=1)
             rel = bands[band1]+','+bands[band2]+'-'+bands[band3]
-            table_ind = [n_relation, n_relation+1, n_relation+2]
+            table_ind = [n_relation+1, n_relation, n_relation+2]
             pwz3_a[table_ind] = [c[0], c[4], c_fun[0]]
             pwz3_b[table_ind] = [c[1], c[5], c_fun[1]]
             pwz3_c[table_ind] = [c[2], c[6], c_fun[2]]
@@ -111,12 +115,14 @@ for ind in range(0,len(bands)-2):
             pwz3_ce[table_ind] = [e[2], e[5], e_fun[2]]
             pwz3_sig[table_ind] = [c[3], c[7], c_fun[3]]
             pwz3_bands[table_ind] = [rel, rel, rel]
-            rel_type[table_ind] = ['FU', 'FO', 'FO+FU']
+            rel_type[table_ind] = ['FO', 'FU', 'FO+FU']
+            alpha = ext_in[0]/(ext_in[1]-ext_in[2])
+            pwz3_alpha[table_ind] = [alpha, alpha, alpha]
             band3 += 1
             n_relation += 3
 
-data = np.array(zip(rel_type, pwz3_bands, pwz3_a, pwz3_b, pwz3_c, pwz3_ae, pwz3_be, pwz3_ce,
-    pwz3_sig), dtype=[('type', 'S5'), ('bands', 'S8'), ('a', float), ('b', float), ('c', float),
+data = np.array(zip(rel_type, pwz3_bands, pwz3_alpha, pwz3_a, pwz3_b, pwz3_c, pwz3_ae, pwz3_be, pwz3_ce,
+    pwz3_sig), dtype=[('type', 'S5'), ('bands', 'S8'), ('alpha', float), ('a', float), ('b', float), ('c', float),
     ('ae', float), ('be', float), ('ce', float), ('sig', float)])
-np.savetxt('PWZ3.dat', data, fmt=['%5s', '%8s']+['%6.3f', '%6.3f', '%6.3f', '%6.3f',
+np.savetxt('PWZ3.dat', data, fmt=['%5s', '%8s']+['%6.3f','%6.3f', '%6.3f', '%6.3f', '%6.3f',
     '%6.3f', '%6.3f', '%6.3f'])

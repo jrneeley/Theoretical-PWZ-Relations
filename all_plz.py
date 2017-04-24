@@ -25,7 +25,7 @@ for ind, band in enumerate(bands):
     plz_ce[inds] = [e[2], e[5], e_fun[2]]
     plz_sig[inds] = [c[3], c[7], c_fun[3]]
     plz_bands[inds] = [band, band, band]
-    rel_type[inds] = ['FU', 'FO', 'FO+FU']
+    rel_type[inds] = ['FO', 'FU', 'FO+FU']
 
 data = np.array(zip(rel_type, plz_bands, plz_a, plz_b, plz_c, plz_ae, plz_be, plz_ce,
     plz_sig), dtype=[('type', 'S5'), ('bands', 'S2'), ('a', float), ('b', float), ('c', float),
