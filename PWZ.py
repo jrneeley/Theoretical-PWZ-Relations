@@ -172,11 +172,10 @@ def get_PWZ(bands, ext=0, fundamentalized=0, suppress_output=0):
     return coefficients, errors
 
 def get_PLZ(band, fundamentalized=0, suppress_output=0):
-    bands_all = ['R', 'I', 'J', 'H', 'K', 'I1', 'I2', 'I3', 'I4',
+    bands_all = ['U', 'B', 'V', 'R', 'I', 'J', 'H', 'K', 'I1', 'I2', 'I3', 'I4',
         'W1', 'W2', 'W3', 'W4']
 
-    col1 = bands_all.index(band)+9
-
+    col1 = bands_all.index(band)+6
 
     # Read in theoretical mean mags for two band relation
     dtype1 = np.dtype([('Z', float), ('Y', float), ('logP', float), (band, float)])
