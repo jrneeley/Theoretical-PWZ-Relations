@@ -1,6 +1,8 @@
 # Theoretical-PWZ-Relations
 Generate coefficients of theoretical PWZ relations presented in 
-Neeley et al. 2017, ApJ, 841, 84
+Neeley et al. 2017, ApJ, 841, 84.
+
+![Example PLZ](example_plz.png?raw=true "Example PLZ")
 
 Dependencies: Numpy, matplotlib, statsmodels, pandas, seaborn
 
